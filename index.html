@@ -220,7 +220,125 @@
             background: linear-gradient(to bottom, #F07800, #4A7C2F);
         }
 
-        /* Responsive */
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .tab-button {
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.15);
+            color: #F5F0E8;
+            padding: 0.6rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: 'Bebas Neue', cursive;
+            font-size: 0.9rem;
+            letter-spacing: 0.04em;
+            transition: all 200ms ease;
+        }
+
+        .tab-button.active {
+            background: #F07800;
+            border-color: #F07800;
+            color: #0D0D0D;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fade-in 300ms cubic-bezier(0.23,1,0.32,1) forwards;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Respiração em Caixa */
+        .breathing-circle {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(240,120,0,0.6), rgba(240,120,0,0.2));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 2rem auto;
+            animation: breathing 8s infinite;
+            position: relative;
+        }
+
+        .breathing-circle.exhale {
+            animation: breathing-exhale 8s infinite;
+        }
+
+        .breathing-circle-inner {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 2.5rem;
+            color: #F07800;
+            text-align: center;
+        }
+
+        @keyframes breathing {
+            0%, 100% { transform: scale(1); }
+            25% { transform: scale(1.2); }
+            50% { transform: scale(1.3); }
+            75% { transform: scale(1.1); }
+        }
+
+        @keyframes breathing-exhale {
+            0%, 100% { transform: scale(1.3); }
+            25% { transform: scale(1.1); }
+            50% { transform: scale(1); }
+            75% { transform: scale(1.1); }
+        }
+
+        /* Rio SVG Grid */
+        .rio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            max-width: 900px;
+        }
+
+        .rio-card {
+            border-radius: 8px;
+            overflow: hidden;
+            border: 2px solid rgba(240,120,0,0.3);
+            cursor: pointer;
+            transition: all 200ms ease;
+        }
+
+        .rio-card:hover {
+            border-color: #F07800;
+            transform: scale(1.02);
+        }
+
+        .rio-svg {
+            width: 100%;
+            height: 200px;
+            display: block;
+        }
+
+        .rio-label {
+            padding: 1rem;
+            background: rgba(40,80,20,0.2);
+            text-align: center;
+        }
+
+        .rio-label p {
+            font-family: 'Bebas Neue', cursive;
+            color: #4A7C2F;
+            font-size: 0.9rem;
+            letter-spacing: 0.05em;
+        }
+
+        @keyframes fade-in {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
         @media (max-width: 768px) {
             .header {
                 padding: 0.8rem 1rem;
@@ -238,11 +356,15 @@
             .slide-title {
                 font-size: clamp(1.5rem, 4vw, 2.5rem);
             }
-        }
 
-        @keyframes fade-in {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            .breathing-circle {
+                width: 150px;
+                height: 150px;
+            }
+
+            .breathing-circle-inner {
+                font-size: 1.8rem;
+            }
         }
     </style>
 </head>
@@ -267,15 +389,14 @@
             <!-- Slide 1: Capa -->
             <div class="slide active">
                 <div class="accent-bar"></div>
-                <div class="slide-bg" style="background-image: url('https://d2xsxph8kpxj0f.cloudfront.net/310519663757223843/F8uMASGKZwf5Y242ejh5zm/hero_capa-6EfAbxn7bZ2mRJLirZY9mx.webp');"></div>
-                <div class="slide-content">
+                <div class="slide-content" style="background: linear-gradient(135deg, rgba(13,13,13,0.88) 0%, rgba(40,80,20,0.75) 50%, rgba(13,13,13,0.70) 100%);">
                     <div style="max-width: 600px;">
-                        <div style="font-family: 'Bebas Neue', cursive; font-size: 0.9rem; letter-spacing: 0.05em; color: #F07800; margin-bottom: 1rem;">CURSINHO POPULAR · ECOS DA MARGEM</div>
-                        <h1 class="slide-title">DESCOMPRESSÃO<br><span class="accent">PRÉ-PROVA</span></h1>
-                        <p class="slide-text" style="font-style: italic; margin-bottom: 2rem;">
+                        <div style="font-family: 'Bebas Neue', cursive; font-size: 0.9rem; letter-spacing: 0.05em; color: #F07800; margin-bottom: 1rem; animation: slideInUp 600ms cubic-bezier(0.23,1,0.32,1) 100ms both;">CURSINHO POPULAR · ECOS DA MARGEM</div>
+                        <h1 class="slide-title" style="animation: slideInUp 600ms cubic-bezier(0.23,1,0.32,1) 200ms both;">DESCOMPRESSÃO<br><span class="accent">PRÉ-PROVA</span></h1>
+                        <p class="slide-text" style="font-style: italic; margin-bottom: 2rem; animation: slideInUp 600ms cubic-bezier(0.23,1,0.32,1) 350ms both;">
                             "A gente para um pouco não pra deixar de estudar, mas porque <strong style="color: #F07800;">cuidar de quem estuda também é parte do processo.</strong>"
                         </p>
-                        <div style="border-left: 3px solid #F07800; padding-left: 1rem;">
+                        <div style="border-left: 3px solid #F07800; padding-left: 1rem; animation: slideInUp 600ms cubic-bezier(0.23,1,0.32,1) 450ms both;">
                             <p style="font-family: 'Bebas Neue', cursive; font-size: 1.1rem; color: #F5F0E8; letter-spacing: 0.02em; margin-bottom: 0.3rem;">ÁDRIA PIMENTEL SILVA</p>
                             <p style="font-size: 0.85rem; color: #F07800;">Educadora Popular e Psicóloga · CRP 20/12.882</p>
                         </div>
@@ -313,28 +434,86 @@
                 </div>
             </div>
 
-            <!-- Slide 3: Os Três Quadros -->
+            <!-- Slide 3: Os Três Quadros (com SVG) -->
             <div class="slide">
                 <div class="accent-bar"></div>
                 <div class="slide-content" style="background: #0D0D0D;">
                     <h2 class="slide-title">QUAL DESSAS IMAGENS<br><span class="accent">MELHOR REPRESENTA SEU ESTADO?</span></h2>
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; max-width: 900px; margin-top: 2rem;">
-                        <div style="border-radius: 8px; overflow: hidden; border: 2px solid rgba(240,120,0,0.3); cursor: pointer; transition: all 200ms ease;" onmouseover="this.style.borderColor='#F07800'; this.style.transform='scale(1.02)'" onmouseout="this.style.borderColor='rgba(240,120,0,0.3)'; this.style.transform='scale(1)'">
-                            <img src="https://d2xsxph8kpxj0f.cloudfront.net/310519663757223843/F8uMASGKZwf5Y242ejh5zm/rio_calmo-XRnS5zZoy45Gc8WpkAPpQM.webp" alt="Rio calmo" style="width: 100%; height: 200px; object-fit: cover;">
-                            <div style="padding: 1rem; background: rgba(40,80,20,0.2); text-align: center;">
-                                <p style="font-family: 'Bebas Neue', cursive; color: #4A7C2F; font-size: 0.9rem; letter-spacing: 0.05em;">RIO CALMO</p>
+                    <div class="rio-grid" style="margin-top: 2rem;">
+                        <!-- Rio Calmo -->
+                        <div class="rio-card">
+                            <svg class="rio-svg" viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+                                <defs>
+                                    <linearGradient id="sky-calmo" x1="0%" y1="0%" x2="0%" y2="100%">
+                                        <stop offset="0%" style="stop-color:#87CEEB;stop-opacity:1" />
+                                        <stop offset="100%" style="stop-color:#E0F6FF;stop-opacity:1" />
+                                    </linearGradient>
+                                    <linearGradient id="water-calmo" x1="0%" y1="0%" x2="0%" y2="100%">
+                                        <stop offset="0%" style="stop-color:#1E90FF;stop-opacity:1" />
+                                        <stop offset="100%" style="stop-color:#4169E1;stop-opacity:1" />
+                                    </linearGradient>
+                                </defs>
+                                <rect width="300" height="200" fill="url(#sky-calmo)"/>
+                                <circle cx="250" cy="40" r="25" fill="#FFD700" opacity="0.8"/>
+                                <path d="M 0 120 Q 75 110 150 120 T 300 120 L 300 200 L 0 200 Z" fill="url(#water-calmo)"/>
+                                <path d="M 0 125 Q 75 115 150 125 T 300 125" stroke="#E0FFFF" stroke-width="1" fill="none" opacity="0.6"/>
+                                <ellipse cx="50" cy="160" rx="30" ry="15" fill="#228B22" opacity="0.7"/>
+                                <ellipse cx="250" cy="150" rx="25" ry="12" fill="#228B22" opacity="0.7"/>
+                            </svg>
+                            <div class="rio-label">
+                                <p>RIO CALMO</p>
                             </div>
                         </div>
-                        <div style="border-radius: 8px; overflow: hidden; border: 2px solid rgba(240,120,0,0.3); cursor: pointer; transition: all 200ms ease;" onmouseover="this.style.borderColor='#F07800'; this.style.transform='scale(1.02)'" onmouseout="this.style.borderColor='rgba(240,120,0,0.3)'; this.style.transform='scale(1)'">
-                            <img src="https://d2xsxph8kpxj0f.cloudfront.net/310519663757223843/F8uMASGKZwf5Y242ejh5zm/rio_turbulento-XRnS5zZoy45Gc8WpkAPpQM.webp" alt="Rio turbulento" style="width: 100%; height: 200px; object-fit: cover;">
-                            <div style="padding: 1rem; background: rgba(240,120,0,0.2); text-align: center;">
-                                <p style="font-family: 'Bebas Neue', cursive; color: #F07800; font-size: 0.9rem; letter-spacing: 0.05em;">RIO TURBULENTO</p>
+
+                        <!-- Rio Turbulento -->
+                        <div class="rio-card">
+                            <svg class="rio-svg" viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+                                <defs>
+                                    <linearGradient id="sky-turb" x1="0%" y1="0%" x2="0%" y2="100%">
+                                        <stop offset="0%" style="stop-color:#696969;stop-opacity:1" />
+                                        <stop offset="100%" style="stop-color:#A9A9A9;stop-opacity:1" />
+                                    </linearGradient>
+                                    <linearGradient id="water-turb" x1="0%" y1="0%" x2="0%" y2="100%">
+                                        <stop offset="0%" style="stop-color:#2F4F4F;stop-opacity:1" />
+                                        <stop offset="100%" style="stop-color:#556B2F;stop-opacity:1" />
+                                    </linearGradient>
+                                </defs>
+                                <rect width="300" height="200" fill="url(#sky-turb)"/>
+                                <path d="M 0 120 Q 20 90 40 110 T 80 100 T 120 115 T 160 95 T 200 110 T 240 100 T 280 115 T 300 105 L 300 200 L 0 200 Z" fill="url(#water-turb)"/>
+                                <path d="M 10 110 Q 30 85 50 105" stroke="#FFF" stroke-width="2" fill="none" opacity="0.8"/>
+                                <path d="M 70 105 Q 90 80 110 110" stroke="#FFF" stroke-width="2" fill="none" opacity="0.8"/>
+                                <path d="M 150 100 Q 170 75 190 105" stroke="#FFF" stroke-width="2" fill="none" opacity="0.8"/>
+                                <path d="M 220 110 Q 240 85 260 110" stroke="#FFF" stroke-width="2" fill="none" opacity="0.8"/>
+                            </svg>
+                            <div class="rio-label">
+                                <p>RIO TURBULENTO</p>
                             </div>
                         </div>
-                        <div style="border-radius: 8px; overflow: hidden; border: 2px solid rgba(240,120,0,0.3); cursor: pointer; transition: all 200ms ease;" onmouseover="this.style.borderColor='#F07800'; this.style.transform='scale(1.02)'" onmouseout="this.style.borderColor='rgba(240,120,0,0.3)'; this.style.transform='scale(1)'">
-                            <img src="https://d2xsxph8kpxj0f.cloudfront.net/310519663757223843/F8uMASGKZwf5Y242ejh5zm/rio_cheia-XRnS5zZoy45Gc8WpkAPpQM.webp" alt="Rio na cheia" style="width: 100%; height: 200px; object-fit: cover;">
-                            <div style="padding: 1rem; background: rgba(74,124,47,0.2); text-align: center;">
-                                <p style="font-family: 'Bebas Neue', cursive; color: #4A7C2F; font-size: 0.9rem; letter-spacing: 0.05em;">RIO NA CHEIA</p>
+
+                        <!-- Rio na Cheia -->
+                        <div class="rio-card">
+                            <svg class="rio-svg" viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+                                <defs>
+                                    <linearGradient id="sky-cheia" x1="0%" y1="0%" x2="0%" y2="100%">
+                                        <stop offset="0%" style="stop-color:#B0C4DE;stop-opacity:1" />
+                                        <stop offset="100%" style="stop-color:#D3D3D3;stop-opacity:1" />
+                                    </linearGradient>
+                                    <linearGradient id="water-cheia" x1="0%" y1="0%" x2="0%" y2="100%">
+                                        <stop offset="0%" style="stop-color:#8B4513;stop-opacity:1" />
+                                        <stop offset="100%" style="stop-color:#A0522D;stop-opacity:1" />
+                                    </linearGradient>
+                                </defs>
+                                <rect width="300" height="200" fill="url(#sky-cheia)"/>
+                                <path d="M 0 80 L 300 85 L 300 200 L 0 200 Z" fill="url(#water-cheia)"/>
+                                <path d="M 0 85 Q 75 75 150 85 T 300 85" stroke="#D2B48C" stroke-width="2" fill="none" opacity="0.7"/>
+                                <circle cx="80" cy="100" r="8" fill="#8B7355" opacity="0.6"/>
+                                <circle cx="180" cy="110" r="6" fill="#8B7355" opacity="0.6"/>
+                                <circle cx="250" cy="95" r="7" fill="#8B7355" opacity="0.6"/>
+                                <path d="M 40 90 L 50 110 L 30 110 Z" fill="#228B22" opacity="0.8"/>
+                                <path d="M 220 85 L 230 105 L 210 105 Z" fill="#228B22" opacity="0.8"/>
+                            </svg>
+                            <div class="rio-label">
+                                <p>RIO NA CHEIA</p>
                             </div>
                         </div>
                     </div>
@@ -415,18 +594,111 @@
                 </div>
             </div>
 
-            <!-- Slide 6: Relaxamento -->
+            <!-- Slide 6: Relaxamento com ABAS -->
             <div class="slide">
                 <div class="accent-bar"></div>
                 <div class="slide-content" style="background: #0A0D08;">
                     <h2 class="slide-title">RELAXAMENTO<br><span class="accent">MUSCULAR</span></h2>
-                    <p class="slide-text" style="margin-bottom: 1rem; max-width: 700px;">Técnica de Jacobson (1938). Tensionar e soltar grupos musculares ativa o sistema nervoso parassimpático — o corpo recebe o sinal de que não há ameaça real.</p>
-                    <div style="background: rgba(74,124,47,0.15); border: 1px solid rgba(74,124,47,0.4); border-left: 3px solid #4A7C2F; border-radius: 6px; padding: 0.9rem 1.1rem; max-width: 700px;">
-                        <p style="font-size: 0.85rem; color: rgba(245,240,232,0.6); margin-bottom: 0.5rem; text-align: justify;"><strong style="color: #4A7C2F;">Preparação:</strong> Sente-se ou deite-se confortável. Respire naturalmente. Quando a mente vaguear, traga de volta para a respiração. Sem julgamento.</p>
-                        <p style="font-size: 0.85rem; color: rgba(245,240,232,0.6); text-align: justify;"><strong style="color: #4A7C2F;">Prática:</strong> Siga de baixo para cima. Para cada grupo: comprima por 5-10 segundos bem devagar, depois solte em 5 segundos. Observe a diferença.</p>
+                    
+                    <!-- Tabs -->
+                    <div class="tabs">
+                        <button class="tab-button active" onclick="switchTab(event, 'prep')">📋 Preparação</button>
+                        <button class="tab-button" onclick="switchTab(event, 'pratica')">💪 Prática</button>
                     </div>
-                    <div style="margin-top: 1.5rem;">
-                        <img src="https://d2xsxph8kpxj0f.cloudfront.net/310519663757223843/F8uMASGKZwf5Y242ejh5zm/corpo_relaxamento-XRnS5zZoy45Gc8WpkAPpQM.webp" alt="Diagrama de corpo" style="max-width: 300px; height: auto;">
+
+                    <!-- Tab Preparação -->
+                    <div id="prep" class="tab-content active">
+                        <div style="display: flex; flex-direction: column; gap: 1rem; max-width: 700px;">
+                            <div style="background: rgba(74,124,47,0.15); border: 1px solid rgba(74,124,47,0.4); border-left: 3px solid #4A7C2F; border-radius: 6px; padding: 0.9rem 1.1rem;">
+                                <div style="display: flex; gap: 1rem;">
+                                    <div style="width: 32px; height: 32px; border-radius: 50%; background: #4A7C2F; color: #F5F0E8; display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue', cursive; font-weight: bold; flex-shrink: 0;">1</div>
+                                    <div>
+                                        <p style="font-family: 'Bebas Neue', cursive; font-size: 0.95rem; color: #F5F0E8; letter-spacing: 0.04em; margin-bottom: 0.2rem;">Posição confortável</p>
+                                        <p style="font-size: 0.8rem; color: rgba(245,240,232,0.65); line-height: 1.5; text-align: justify;">Sente-se ou deite-se de forma que seu corpo esteja apoiado. Sem tensão.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="background: rgba(74,124,47,0.15); border: 1px solid rgba(74,124,47,0.4); border-left: 3px solid #4A7C2F; border-radius: 6px; padding: 0.9rem 1.1rem;">
+                                <div style="display: flex; gap: 1rem;">
+                                    <div style="width: 32px; height: 32px; border-radius: 50%; background: #4A7C2F; color: #F5F0E8; display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue', cursive; font-weight: bold; flex-shrink: 0;">2</div>
+                                    <div>
+                                        <p style="font-family: 'Bebas Neue', cursive; font-size: 0.95rem; color: #F5F0E8; letter-spacing: 0.04em; margin-bottom: 0.2rem;">Preste atenção na respiração</p>
+                                        <p style="font-size: 0.8rem; color: rgba(245,240,232,0.65); line-height: 1.5; text-align: justify;">Respire naturalmente. Observe o ar entrando e saindo.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="background: rgba(74,124,47,0.15); border: 1px solid rgba(74,124,47,0.4); border-left: 3px solid #4A7C2F; border-radius: 6px; padding: 0.9rem 1.1rem;">
+                                <div style="display: flex; gap: 1rem;">
+                                    <div style="width: 32px; height: 32px; border-radius: 50%; background: #4A7C2F; color: #F5F0E8; display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue', cursive; font-weight: bold; flex-shrink: 0;">3</div>
+                                    <div>
+                                        <p style="font-family: 'Bebas Neue', cursive; font-size: 0.95rem; color: #F5F0E8; letter-spacing: 0.04em; margin-bottom: 0.2rem;">Mente dispersa?</p>
+                                        <p style="font-size: 0.8rem; color: rgba(245,240,232,0.65); line-height: 1.5; text-align: justify;">Quando a mente vaguear, traga a atenção de volta para a respiração. Sem julgamento.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="background: rgba(74,124,47,0.15); border: 1px solid rgba(74,124,47,0.4); border-left: 3px solid #4A7C2F; border-radius: 6px; padding: 0.9rem 1.1rem;">
+                                <div style="display: flex; gap: 1rem;">
+                                    <div style="width: 32px; height: 32px; border-radius: 50%; background: #4A7C2F; color: #F5F0E8; display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue', cursive; font-weight: bold; flex-shrink: 0;">4</div>
+                                    <div>
+                                        <p style="font-family: 'Bebas Neue', cursive; font-size: 0.95rem; color: #F5F0E8; letter-spacing: 0.04em; margin-bottom: 0.2rem;">Agora sim, comece</p>
+                                        <p style="font-size: 0.8rem; color: rgba(245,240,232,0.65); line-height: 1.5; text-align: justify;">Com a mente mais presente, inicie a prática de relaxamento.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab Prática -->
+                    <div id="pratica" class="tab-content">
+                        <p class="slide-text" style="margin-bottom: 1rem; max-width: 700px;">Siga a sequência de <strong style="color: #F07800;">baixo para cima</strong>. Para cada grupo: comprima por 5-10 segundos bem devagar, depois solte em 5 segundos. Observe a diferença.</p>
+                        <div style="display: flex; flex-direction: column; gap: 0.5rem; max-width: 400px;">
+                            <div style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; padding: 0.6rem 0.8rem; cursor: pointer; transition: all 200ms ease;" onmouseover="this.style.background='rgba(240,120,0,0.2)'; this.style.borderColor='#F07800'" onmouseout="this.style.background='rgba(255,255,255,0.04)'; this.style.borderColor='rgba(255,255,255,0.1)'">
+                                <div style="display: flex; gap: 0.5rem; align-items: center;">
+                                    <div style="width: 24px; height: 24px; border-radius: 50%; background: #4A7C2F; color: #F5F0E8; display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue', cursive; font-size: 0.75rem; font-weight: bold;">1</div>
+                                    <p style="font-family: 'Bebas Neue', cursive; font-size: 0.85rem; color: #F5F0E8; letter-spacing: 0.03em;">Pés e tornozelos</p>
+                                </div>
+                                <p style="font-family: 'Nunito', sans-serif; font-size: 0.75rem; color: rgba(245,240,232,0.6); margin-top: 0.3rem; padding-top: 0.3rem; border-top: 1px solid rgba(240,120,0,0.3);">⏱️ 5-10s comprimindo, 5s soltando</p>
+                            </div>
+                            <div style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; padding: 0.6rem 0.8rem; cursor: pointer; transition: all 200ms ease;" onmouseover="this.style.background='rgba(240,120,0,0.2)'; this.style.borderColor='#F07800'" onmouseout="this.style.background='rgba(255,255,255,0.04)'; this.style.borderColor='rgba(255,255,255,0.1)'">
+                                <div style="display: flex; gap: 0.5rem; align-items: center;">
+                                    <div style="width: 24px; height: 24px; border-radius: 50%; background: #4A7C2F; color: #F5F0E8; display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue', cursive; font-size: 0.75rem; font-weight: bold;">2</div>
+                                    <p style="font-family: 'Bebas Neue', cursive; font-size: 0.85rem; color: #F5F0E8; letter-spacing: 0.03em;">Panturrilhas e coxas</p>
+                                </div>
+                                <p style="font-family: 'Nunito', sans-serif; font-size: 0.75rem; color: rgba(245,240,232,0.6); margin-top: 0.3rem; padding-top: 0.3rem; border-top: 1px solid rgba(240,120,0,0.3);">⏱️ 5-10s comprimindo, 5s soltando</p>
+                            </div>
+                            <div style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; padding: 0.6rem 0.8rem; cursor: pointer; transition: all 200ms ease;" onmouseover="this.style.background='rgba(240,120,0,0.2)'; this.style.borderColor='#F07800'" onmouseout="this.style.background='rgba(255,255,255,0.04)'; this.style.borderColor='rgba(255,255,255,0.1)'">
+                                <div style="display: flex; gap: 0.5rem; align-items: center;">
+                                    <div style="width: 24px; height: 24px; border-radius: 50%; background: #4A7C2F; color: #F5F0E8; display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue', cursive; font-size: 0.75rem; font-weight: bold;">3</div>
+                                    <p style="font-family: 'Bebas Neue', cursive; font-size: 0.85rem; color: #F5F0E8; letter-spacing: 0.03em;">Glúteos e abdômen</p>
+                                </div>
+                                <p style="font-family: 'Nunito', sans-serif; font-size: 0.75rem; color: rgba(245,240,232,0.6); margin-top: 0.3rem; padding-top: 0.3rem; border-top: 1px solid rgba(240,120,0,0.3);">⏱️ 5-10s comprimindo, 5s soltando</p>
+                            </div>
+                            <div style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; padding: 0.6rem 0.8rem; cursor: pointer; transition: all 200ms ease;" onmouseover="this.style.background='rgba(240,120,0,0.2)'; this.style.borderColor='#F07800'" onmouseout="this.style.background='rgba(255,255,255,0.04)'; this.style.borderColor='rgba(255,255,255,0.1)'">
+                                <div style="display: flex; gap: 0.5rem; align-items: center;">
+                                    <div style="width: 24px; height: 24px; border-radius: 50%; background: #4A7C2F; color: #F5F0E8; display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue', cursive; font-size: 0.75rem; font-weight: bold;">4</div>
+                                    <p style="font-family: 'Bebas Neue', cursive; font-size: 0.85rem; color: #F5F0E8; letter-spacing: 0.03em;">Peito e costas</p>
+                                </div>
+                                <p style="font-family: 'Nunito', sans-serif; font-size: 0.75rem; color: rgba(245,240,232,0.6); margin-top: 0.3rem; padding-top: 0.3rem; border-top: 1px solid rgba(240,120,0,0.3);">⏱️ 5-10s comprimindo, 5s soltando</p>
+                            </div>
+                            <div style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; padding: 0.6rem 0.8rem; cursor: pointer; transition: all 200ms ease;" onmouseover="this.style.background='rgba(240,120,0,0.2)'; this.style.borderColor='#F07800'" onmouseout="this.style.background='rgba(255,255,255,0.04)'; this.style.borderColor='rgba(255,255,255,0.1)'">
+                                <div style="display: flex; gap: 0.5rem; align-items: center;">
+                                    <div style="width: 24px; height: 24px; border-radius: 50%; background: #4A7C2F; color: #F5F0E8; display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue', cursive; font-size: 0.75rem; font-weight: bold;">5</div>
+                                    <p style="font-family: 'Bebas Neue', cursive; font-size: 0.85rem; color: #F5F0E8; letter-spacing: 0.03em;">Braços e mãos</p>
+                                </div>
+                                <p style="font-family: 'Nunito', sans-serif; font-size: 0.75rem; color: rgba(245,240,232,0.6); margin-top: 0.3rem; padding-top: 0.3rem; border-top: 1px solid rgba(240,120,0,0.3);">⏱️ 5-10s comprimindo, 5s soltando</p>
+                            </div>
+                            <div style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; padding: 0.6rem 0.8rem; cursor: pointer; transition: all 200ms ease;" onmouseover="this.style.background='rgba(240,120,0,0.2)'; this.style.borderColor='#F07800'" onmouseout="this.style.background='rgba(255,255,255,0.04)'; this.style.borderColor='rgba(255,255,255,0.1)'">
+                                <div style="display: flex; gap: 0.5rem; align-items: center;">
+                                    <div style="width: 24px; height: 24px; border-radius: 50%; background: #4A7C2F; color: #F5F0E8; display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue', cursive; font-size: 0.75rem; font-weight: bold;">6</div>
+                                    <p style="font-family: 'Bebas Neue', cursive; font-size: 0.85rem; color: #F5F0E8; letter-spacing: 0.03em;">Pescoço, mandíbula e rosto</p>
+                                </div>
+                                <p style="font-family: 'Nunito', sans-serif; font-size: 0.75rem; color: rgba(245,240,232,0.6); margin-top: 0.3rem; padding-top: 0.3rem; border-top: 1px solid rgba(240,120,0,0.3);">⏱️ 5-10s comprimindo, 5s soltando</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="background: rgba(240,120,0,0.1); border: 1px solid rgba(240,120,0,0.35); border-left: 3px solid #F07800; border-radius: 4px; padding: 0.8rem 1rem; max-width: 700px; margin-top: 1.5rem;">
+                        <p style="font-family: 'Nunito', sans-serif; font-size: 0.8rem; color: #F5F0E8; line-height: 1.6; text-align: justify;">💡 <strong style="color: #F07800;">O segredo:</strong> Quanto mais <strong>devagar</strong> você fizer, mais efetivo é. Não é corrida. Você está ensinando seu corpo a relaxar.</p>
                     </div>
                 </div>
             </div>
@@ -462,12 +734,23 @@
                 </div>
             </div>
 
-            <!-- Slide 8: Respiração -->
+            <!-- Slide 8: Respiração em Caixa COM ANIMAÇÃO -->
             <div class="slide">
                 <div class="accent-bar"></div>
                 <div class="slide-content" style="background: #0D0D0D;">
                     <h2 class="slide-title">RESPIRAÇÃO<br><span class="accent">EM CAIXA</span></h2>
                     <p class="slide-text" style="margin-bottom: 1.5rem; max-width: 700px;">Box Breathing (4-4-4-4): Inspire por 4 segundos. Segure por 4. Expire por 4. Segure por 4. Repita 3-5 vezes.</p>
+                    
+                    <!-- Círculo animado -->
+                    <div style="text-align: center; margin: 2rem 0;">
+                        <div class="breathing-circle" id="breathing-circle">
+                            <div class="breathing-circle-inner">
+                                <div style="font-size: 1rem; margin-bottom: 0.5rem;">INSPIRE</div>
+                                <div style="font-size: 0.8rem; opacity: 0.8;">4 segundos</div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div style="background: rgba(240,120,0,0.1); border: 1px solid rgba(240,120,0,0.3); border-left: 3px solid #F07800; border-radius: 6px; padding: 1rem; max-width: 700px;">
                         <p style="font-size: 0.85rem; color: rgba(245,240,232,0.65); line-height: 1.6; text-align: justify;">Isso você pode fazer em qualquer momento — até na sala de prova. Ninguém vai notar. É silencioso, rápido e funciona.</p>
                     </div>
@@ -647,6 +930,18 @@
             updateSlide();
         }
 
+        function switchTab(e, tabName) {
+            e.preventDefault();
+            const contents = document.querySelectorAll('.tab-content');
+            const buttons = document.querySelectorAll('.tab-button');
+            
+            contents.forEach(c => c.classList.remove('active'));
+            buttons.forEach(b => b.classList.remove('active'));
+            
+            document.getElementById(tabName).classList.add('active');
+            e.target.classList.add('active');
+        }
+
         document.addEventListener('keydown', (e) => {
             if (e.key === 'ArrowRight') nextSlide();
             if (e.key === 'ArrowLeft') previousSlide();
@@ -654,5 +949,18 @@
 
         updateSlide();
     </script>
+
+    <style>
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(24px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
 </body>
 </html>
