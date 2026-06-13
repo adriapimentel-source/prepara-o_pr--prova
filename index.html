@@ -294,6 +294,25 @@
             75% { transform: scale(1.1); }
         }
 
+        .breathing-box {
+            width: 250px;
+            height: 250px;
+            border: 3px solid #F07800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 2rem auto;
+            animation: breathing-box 8s infinite;
+            position: relative;
+        }
+
+        @keyframes breathing-box {
+            0%, 100% { width: 250px; height: 250px; }
+            25% { width: 300px; height: 300px; }
+            50% { width: 350px; height: 350px; }
+            75% { width: 300px; height: 300px; }
+        }
+
         /* Rio SVG Grid */
         .rio-grid {
             display: grid;
@@ -434,7 +453,7 @@
                 </div>
             </div>
 
-            <!-- Slide 3: Os Três Quadros (com SVG) -->
+            <!-- Slide 3: Os Três Quadros (com fotos reais) -->
             <div class="slide">
                 <div class="accent-bar"></div>
                 <div class="slide-content" style="background: #0D0D0D;">
@@ -442,24 +461,7 @@
                     <div class="rio-grid" style="margin-top: 2rem;">
                         <!-- Rio Calmo -->
                         <div class="rio-card">
-                            <svg class="rio-svg" viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
-                                <defs>
-                                    <linearGradient id="sky-calmo" x1="0%" y1="0%" x2="0%" y2="100%">
-                                        <stop offset="0%" style="stop-color:#87CEEB;stop-opacity:1" />
-                                        <stop offset="100%" style="stop-color:#E0F6FF;stop-opacity:1" />
-                                    </linearGradient>
-                                    <linearGradient id="water-calmo" x1="0%" y1="0%" x2="0%" y2="100%">
-                                        <stop offset="0%" style="stop-color:#1E90FF;stop-opacity:1" />
-                                        <stop offset="100%" style="stop-color:#4169E1;stop-opacity:1" />
-                                    </linearGradient>
-                                </defs>
-                                <rect width="300" height="200" fill="url(#sky-calmo)"/>
-                                <circle cx="250" cy="40" r="25" fill="#FFD700" opacity="0.8"/>
-                                <path d="M 0 120 Q 75 110 150 120 T 300 120 L 300 200 L 0 200 Z" fill="url(#water-calmo)"/>
-                                <path d="M 0 125 Q 75 115 150 125 T 300 125" stroke="#E0FFFF" stroke-width="1" fill="none" opacity="0.6"/>
-                                <ellipse cx="50" cy="160" rx="30" ry="15" fill="#228B22" opacity="0.7"/>
-                                <ellipse cx="250" cy="150" rx="25" ry="12" fill="#228B22" opacity="0.7"/>
-                            </svg>
+                            <img class="rio-svg" src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=200&fit=crop" alt="Rio calmo" style="width: 100%; height: 200px; object-fit: cover;">
                             <div class="rio-label">
                                 <p>RIO CALMO</p>
                             </div>
@@ -467,24 +469,7 @@
 
                         <!-- Rio Turbulento -->
                         <div class="rio-card">
-                            <svg class="rio-svg" viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
-                                <defs>
-                                    <linearGradient id="sky-turb" x1="0%" y1="0%" x2="0%" y2="100%">
-                                        <stop offset="0%" style="stop-color:#696969;stop-opacity:1" />
-                                        <stop offset="100%" style="stop-color:#A9A9A9;stop-opacity:1" />
-                                    </linearGradient>
-                                    <linearGradient id="water-turb" x1="0%" y1="0%" x2="0%" y2="100%">
-                                        <stop offset="0%" style="stop-color:#2F4F4F;stop-opacity:1" />
-                                        <stop offset="100%" style="stop-color:#556B2F;stop-opacity:1" />
-                                    </linearGradient>
-                                </defs>
-                                <rect width="300" height="200" fill="url(#sky-turb)"/>
-                                <path d="M 0 120 Q 20 90 40 110 T 80 100 T 120 115 T 160 95 T 200 110 T 240 100 T 280 115 T 300 105 L 300 200 L 0 200 Z" fill="url(#water-turb)"/>
-                                <path d="M 10 110 Q 30 85 50 105" stroke="#FFF" stroke-width="2" fill="none" opacity="0.8"/>
-                                <path d="M 70 105 Q 90 80 110 110" stroke="#FFF" stroke-width="2" fill="none" opacity="0.8"/>
-                                <path d="M 150 100 Q 170 75 190 105" stroke="#FFF" stroke-width="2" fill="none" opacity="0.8"/>
-                                <path d="M 220 110 Q 240 85 260 110" stroke="#FFF" stroke-width="2" fill="none" opacity="0.8"/>
-                            </svg>
+                            <img class="rio-svg" src="https://images.unsplash.com/photo-1505142468610-359e7d316be0?w=400&h=200&fit=crop" alt="Rio turbulento" style="width: 100%; height: 200px; object-fit: cover;">
                             <div class="rio-label">
                                 <p>RIO TURBULENTO</p>
                             </div>
@@ -492,26 +477,7 @@
 
                         <!-- Rio na Cheia -->
                         <div class="rio-card">
-                            <svg class="rio-svg" viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
-                                <defs>
-                                    <linearGradient id="sky-cheia" x1="0%" y1="0%" x2="0%" y2="100%">
-                                        <stop offset="0%" style="stop-color:#B0C4DE;stop-opacity:1" />
-                                        <stop offset="100%" style="stop-color:#D3D3D3;stop-opacity:1" />
-                                    </linearGradient>
-                                    <linearGradient id="water-cheia" x1="0%" y1="0%" x2="0%" y2="100%">
-                                        <stop offset="0%" style="stop-color:#8B4513;stop-opacity:1" />
-                                        <stop offset="100%" style="stop-color:#A0522D;stop-opacity:1" />
-                                    </linearGradient>
-                                </defs>
-                                <rect width="300" height="200" fill="url(#sky-cheia)"/>
-                                <path d="M 0 80 L 300 85 L 300 200 L 0 200 Z" fill="url(#water-cheia)"/>
-                                <path d="M 0 85 Q 75 75 150 85 T 300 85" stroke="#D2B48C" stroke-width="2" fill="none" opacity="0.7"/>
-                                <circle cx="80" cy="100" r="8" fill="#8B7355" opacity="0.6"/>
-                                <circle cx="180" cy="110" r="6" fill="#8B7355" opacity="0.6"/>
-                                <circle cx="250" cy="95" r="7" fill="#8B7355" opacity="0.6"/>
-                                <path d="M 40 90 L 50 110 L 30 110 Z" fill="#228B22" opacity="0.8"/>
-                                <path d="M 220 85 L 230 105 L 210 105 Z" fill="#228B22" opacity="0.8"/>
-                            </svg>
+                            <img class="rio-svg" src="https://images.unsplash.com/photo-1511316695145-4992006ffddb?w=400&h=200&fit=crop" alt="Rio na cheia" style="width: 100%; height: 200px; object-fit: cover;">
                             <div class="rio-label">
                                 <p>RIO NA CHEIA</p>
                             </div>
@@ -741,12 +707,14 @@
                     <h2 class="slide-title">RESPIRAÇÃO<br><span class="accent">EM CAIXA</span></h2>
                     <p class="slide-text" style="margin-bottom: 1.5rem; max-width: 700px;">Box Breathing (4-4-4-4): Inspire por 4 segundos. Segure por 4. Expire por 4. Segure por 4. Repita 3-5 vezes.</p>
                     
-                    <!-- Círculo animado -->
+                    <!-- Cubo com círculo animado -->
                     <div style="text-align: center; margin: 2rem 0;">
-                        <div class="breathing-circle" id="breathing-circle">
-                            <div class="breathing-circle-inner">
-                                <div style="font-size: 1rem; margin-bottom: 0.5rem;">INSPIRE</div>
-                                <div style="font-size: 0.8rem; opacity: 0.8;">4 segundos</div>
+                        <div class="breathing-box">
+                            <div class="breathing-circle" id="breathing-circle">
+                                <div class="breathing-circle-inner">
+                                    <div style="font-size: 1rem; margin-bottom: 0.5rem;">INSPIRE</div>
+                                    <div style="font-size: 0.8rem; opacity: 0.8;">4 segundos</div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -836,27 +804,27 @@
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1rem; max-width: 700px; margin-bottom: 2rem;">
                         <div style="background: rgba(74,124,47,0.15); border: 1px solid rgba(74,124,47,0.4); border-radius: 6px; padding: 1rem; text-align: center;">
                             <p style="font-size: 1.3rem; margin-bottom: 0.5rem;">🌿</p>
-                            <p style="font-family: 'Bebas Neue', cursive; color: #4A7C2F; font-size: 0.85rem; letter-spacing: 0.04em;">Reflexão</p>
+                            <p style="font-family: 'Bebas Neue', cursive; color: #4A7C2F; font-size: 0.85rem; letter-spacing: 0.04em;">Reflexão sobre Si</p>
                         </div>
                         <div style="background: rgba(74,124,47,0.15); border: 1px solid rgba(74,124,47,0.4); border-radius: 6px; padding: 1rem; text-align: center;">
                             <p style="font-size: 1.3rem; margin-bottom: 0.5rem;">🫁</p>
-                            <p style="font-family: 'Bebas Neue', cursive; color: #4A7C2F; font-size: 0.85rem; letter-spacing: 0.04em;">Respiração</p>
+                            <p style="font-family: 'Bebas Neue', cursive; color: #4A7C2F; font-size: 0.85rem; letter-spacing: 0.04em;">Respiração em Caixa</p>
                         </div>
                         <div style="background: rgba(74,124,47,0.15); border: 1px solid rgba(74,124,47,0.4); border-radius: 6px; padding: 1rem; text-align: center;">
                             <p style="font-size: 1.3rem; margin-bottom: 0.5rem;">💪</p>
-                            <p style="font-family: 'Bebas Neue', cursive; color: #4A7C2F; font-size: 0.85rem; letter-spacing: 0.04em;">Relaxamento</p>
+                            <p style="font-family: 'Bebas Neue', cursive; color: #4A7C2F; font-size: 0.85rem; letter-spacing: 0.04em;">Relaxamento Muscular</p>
                         </div>
                         <div style="background: rgba(74,124,47,0.15); border: 1px solid rgba(74,124,47,0.4); border-radius: 6px; padding: 1rem; text-align: center;">
                             <p style="font-size: 1.3rem; margin-bottom: 0.5rem;">🧠</p>
-                            <p style="font-family: 'Bebas Neue', cursive; color: #4A7C2F; font-size: 0.85rem; letter-spacing: 0.04em;">Grounding</p>
+                            <p style="font-family: 'Bebas Neue', cursive; color: #4A7C2F; font-size: 0.85rem; letter-spacing: 0.04em;">Grounding 5-4-3-2-1</p>
                         </div>
                         <div style="background: rgba(74,124,47,0.15); border: 1px solid rgba(74,124,47,0.4); border-radius: 6px; padding: 1rem; text-align: center;">
                             <p style="font-size: 1.3rem; margin-bottom: 0.5rem;">✍️</p>
-                            <p style="font-family: 'Bebas Neue', cursive; color: #4A7C2F; font-size: 0.85rem; letter-spacing: 0.04em;">Dump</p>
+                            <p style="font-family: 'Bebas Neue', cursive; color: #4A7C2F; font-size: 0.85rem; letter-spacing: 0.04em;">Dump Cognitivo</p>
                         </div>
                         <div style="background: rgba(74,124,47,0.15); border: 1px solid rgba(74,124,47,0.4); border-radius: 6px; padding: 1rem; text-align: center;">
                             <p style="font-size: 1.3rem; margin-bottom: 0.5rem;">⚡</p>
-                            <p style="font-family: 'Bebas Neue', cursive; color: #4A7C2F; font-size: 0.85rem; letter-spacing: 0.04em;">Ressignificar</p>
+                            <p style="font-family: 'Bebas Neue', cursive; color: #4A7C2F; font-size: 0.85rem; letter-spacing: 0.04em;">Ressignificar Ansiedade</p>
                         </div>
                     </div>
                     <div style="border-top: 2px solid #F07800; padding-top: 1.5rem;">
