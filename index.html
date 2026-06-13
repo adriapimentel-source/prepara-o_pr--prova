@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Descompressão Pré-Prova — Ecos da Margem</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: #0D0D0D;
+            color: #F5F0E8;
+            overflow: hidden;
+        }
+
+        .container {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: linear-gradient(135deg, rgba(13,13,13,0.95) 0%, rgba(40,80,20,0.85) 100%);
+            border-bottom: 2px solid #F07800;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo {
+            width: 40px;
+            height: 40px;
+            background: #F07800;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #0D0D0D;
+            font-size: 0.8rem;
+        }
+
+        .header-title {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 1rem;
+            letter-spacing: 0.05em;
+            color: #F07800;
+        }
+
+        .progress-bar {
+            height: 4px;
+            background: rgba(255,255,255,0.1);
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #F07800, #4A7C2F);
+            transition: width 300ms ease;
+        }
+
+        .slide-container {
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .slide {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 500ms cubic-bezier(0.23,1,0.32,1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .slide.active {
+            opacity: 1;
+            transform: translateX(0);
+            z-index: 10;
+        }
+
+        .slide.prev {
+            transform: translateX(-100%);
+        }
+
+        .slide-content {
+            width: 100%;
+            height: 100%;
+            padding: 3rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .footer {
+            background: rgba(13,13,13,0.9);
+            border-top: 1px solid rgba(240,120,0,0.3);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-button {
+            background: rgba(240,120,0,0.2);
+            border: 1px solid #F07800;
+            color: #F07800;
+            padding: 0.6rem 1.2rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: 'Bebas Neue', cursive;
+            letter-spacing: 0.05em;
+            transition: all 200ms ease;
+        }
+
+        .nav-button:hover {
+            background: #F07800;
+            color: #0D0D0D;
+        }
+
+        .nav-button:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .slide-counter {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 0.9rem;
+            letter-spacing: 0.05em;
+            color: #F07800;
+        }
+
+        .dots {
+            display: flex;
+            gap: 0.4rem;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            cursor: pointer;
+            transition: all 200ms ease;
+        }
+
+        .dot.active {
+            background: #F07800;
+            width: 24px;
+            border-radius: 4px;
+        }
+
+        /* Slide Styles */
+        .slide-title {
+            font-family: 'Bebas Neue', cursive;
+            font-size: clamp(2rem, 5vw, 4.5rem);
+            color: #F5F0E8;
+            line-height: 0.95;
+            letter-spacing: 0.02em;
+            margin-bottom: 1.5rem;
+        }
+
+        .slide-title .accent {
+            color: #F07800;
+        }
+
+        .slide-text {
+            font-family: 'Nunito', sans-serif;
+            font-size: 1rem;
+            line-height: 1.6;
+            color: rgba(245,240,232,0.8);
+            text-align: justify;
+            max-width: 700px;
+            margin-bottom: 1rem;
+        }
+
+        .slide-bg {
+            position: absolute;
+            inset: 0;
+            background-size: cover;
+            background-position: center;
+            opacity: 0.15;
+            z-index: 0;
+        }
+
+        .slide-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .accent-bar {
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 6px;
+            background: linear-gradient(to bottom, #F07800, #4A7C2F);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header {
+                padding: 0.8rem 1rem;
+            }
+
+            .slide-content {
+                padding: 2rem 1rem;
+            }
+
+            .footer {
+                padding: 0.8rem 1rem;
+                flex-wrap: wrap;
+            }
+
+            .slide-title {
+                font-size: clamp(1.5rem, 4vw, 2.5rem);
+            }
+        }
+
+        @keyframes fade-in {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-left">
+                <div class="logo">🌿</div>
+                <div class="header-title">DESCOMPRESSÃO PRÉ-PROVA</div>
+            </div>
+            <div class="slide-counter"><span id="current-slide">1</span> / <span id="total-slides">12</span></div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="progress-bar">
+            <div class="progress-fill" id="progress-fill"></div>
+        </div>
+
+        <!-- Slides -->
+        <div class="slide-container">
+            <!-- Slide 1: Capa -->
+            <div class="slide active">
+                <div class="accent-bar"></div>
+                <div class="slide-bg" style="background-image: url('https://d2xsxph8kpxj0f.cloudfront.net/310519663757223843/F8uMASGKZwf5Y242ejh5zm/hero_capa-6EfAbxn7bZ2mRJLirZY9mx.webp');"></div>
+                <div class="slide-content">
+                    <div style="max-width: 600px;">
+                        <div style="font-family: 'Bebas Neue', cursive; font-size: 0.9rem; letter-spacing: 0.05em; color: #F07800; margin-bottom: 1rem;">CURSINHO POPULAR · ECOS DA MARGEM</div>
+                        <h1 class="slide-title">DESCOMPRESSÃO<br><span class="accent">PRÉ-PROVA</span></h1>
+                        <p class="slide-text" style="font-style: italic; margin-bottom: 2rem;">
+                            "A gente para um pouco não pra deixar de estudar, mas porque <strong style="color: #F07800;">cuidar de quem estuda também é parte do processo.</strong>"
+                        </p>
+                        <div style="border-left: 3px solid #F07800; padding-left: 1rem;">
+                            <p style="font-family: 'Bebas Neue', cursive; font-size: 1.1rem; color: #F5F0E8; letter-spacing: 0.02em; margin-bottom: 0.3rem;">ÁDRIA PIMENTEL SILVA</p>
+                            <p style="font-size: 0.85rem; color: #F07800;">Educadora Popular e Psicóloga · CRP 20/12.882</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 2: Contexto -->
+            <div class="slide">
+                <div class="accent-bar"></div>
+                <div class="slide-content" style="background: #0D1A0A;">
+                    <h2 class="slide-title">CHEGADA<br><span class="accent">E CONTEXTO</span></h2>
+                    <div style="background: rgba(240,120,0,0.12); border: 1px solid rgba(240,120,0,0.4); border-left: 4px solid #F07800; border-radius: 4px; padding: 1.25rem 1.5rem; max-width: 600px; margin-bottom: 1.5rem;">
+                        <p class="slide-text" style="font-style: italic; margin-bottom: 0;">
+                            "A gente para um pouco não pra deixar de estudar, mas porque <strong style="color: #F07800;">cuidar de quem estuda também é parte do processo.</strong>"
+                        </p>
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; max-width: 700px;">
+                        <div style="background: rgba(40,80,20,0.25); border: 1px solid rgba(40,80,20,0.5); border-radius: 8px; padding: 1rem;">
+                            <p style="font-size: 1.5rem; margin-bottom: 0.5rem;">🎯</p>
+                            <p style="font-family: 'Bebas Neue', cursive; font-size: 1rem; color: #F07800; letter-spacing: 0.05em; margin-bottom: 0.25rem;">Não é aula de conteúdo</p>
+                            <p style="font-size: 0.85rem; color: rgba(245,240,232,0.7); line-height: 1.5; text-align: justify;">É um encontro de cuidado. Ninguém vai perder tempo aqui.</p>
+                        </div>
+                        <div style="background: rgba(40,80,20,0.25); border: 1px solid rgba(40,80,20,0.5); border-radius: 8px; padding: 1rem;">
+                            <p style="font-size: 1.5rem; margin-bottom: 0.5rem;">🤝</p>
+                            <p style="font-family: 'Bebas Neue', cursive; font-size: 1rem; color: #F07800; letter-spacing: 0.05em; margin-bottom: 0.25rem;">PSC e ENEM</p>
+                            <p style="font-size: 0.85rem; color: rgba(245,240,232,0.7); line-height: 1.5; text-align: justify;">Os desafios são parecidos. O espaço é de escuta, não de avaliação.</p>
+                        </div>
+                        <div style="background: rgba(40,80,20,0.25); border: 1px solid rgba(40,80,20,0.5); border-radius: 8px; padding: 1rem;">
+                            <p style="font-size: 1.5rem; margin-bottom: 0.5rem;">💬</p>
+                            <p style="font-family: 'Bebas Neue', cursive; font-size: 1rem; color: #F07800; letter-spacing: 0.05em; margin-bottom: 0.25rem;">Espaço seguro</p>
+                            <p style="font-size: 0.85rem; color: rgba(245,240,232,0.7); line-height: 1.5; text-align: justify;">Pode falar, pode ficar em silêncio. Tudo bem do jeito que você está.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 3: Os Três Quadros -->
+            <div class="slide">
+                <div class="accent-bar"></div>
+                <div class="slide-content" style="background: #0D0D0D;">
+                    <h2 class="slide-title">QUAL DESSAS IMAGENS<br><span class="accent">MELHOR REPRESENTA SEU ESTADO?</span></h2>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; max-width: 900px; margin-top: 2rem;">
+                        <div style="border-radius: 8px; overflow: hidden; border: 2px solid rgba(240,120,0,0.3); cursor: pointer; transition: all 200ms ease;" onmouseover="this.style.borderColor='#F07800'; this.style.transform='scale(1.02)'" onmouseout="this.style.borderColor='rgba(240,120,0,0.3)'; this.style.transform='scale(1)'">
+                            <img src="https://d2xsxph8kpxj0f.cloudfront.net/310519663757223843/F8uMASGKZwf5Y242ejh5zm/rio_calmo-XRnS5zZoy45Gc8WpkAPpQM.webp" alt="Rio calmo" style="width: 100%; height: 200px; object-fit: cover;">
+                            <div style="padding: 1rem; background: rgba(40,80,20,0.2); text-align: center;">
+                                <p style="font-family: 'Bebas Neue', cursive; color: #4A7C2F; font-size: 0.9rem; letter-spacing: 0.05em;">RIO CALMO</p>
+                            </div>
+                        </div>
+                        <div style="border-radius: 8px; overflow: hidden; border: 2px solid rgba(240,120,0,0.3); cursor: pointer; transition: all 200ms ease;" onmouseover="this.style.borderColor='#F07800'; this.style.transform='scale(1.02)'" onmouseout="this.style.borderColor='rgba(240,120,0,0.3)'; this.style.transform='scale(1)'">
+                            <img src="https://d2xsxph8kpxj0f.cloudfront.net/310519663757223843/F8uMASGKZwf5Y242ejh5zm/rio_turbulento-XRnS5zZoy45Gc8WpkAPpQM.webp" alt="Rio turbulento" style="width: 100%; height: 200px; object-fit: cover;">
+                            <div style="padding: 1rem; background: rgba(240,120,0,0.2); text-align: center;">
+                                <p style="font-family: 'Bebas Neue', cursive; color: #F07800; font-size: 0.9rem; letter-spacing: 0.05em;">RIO TURBULENTO</p>
+                            </div>
+                        </div>
+                        <div style="border-radius: 8px; overflow: hidden; border: 2px solid rgba(240,120,0,0.3); cursor: pointer; transition: all 200ms ease;" onmouseover="this.style.borderColor='#F07800'; this.style.transform='scale(1.02)'" onmouseout="this.style.borderColor='rgba(240,120,0,0.3)'; this.style.transform='scale(1)'">
+                            <img src="https://d2xsxph8kpxj0f.cloudfront.net/310519663757223843/F8uMASGKZwf5Y242ejh5zm/rio_cheia-XRnS5zZoy45Gc8WpkAPpQM.webp" alt="Rio na cheia" style="width: 100%; height: 200px; object-fit: cover;">
+                            <div style="padding: 1rem; background: rgba(74,124,47,0.2); text-align: center;">
+                                <p style="font-family: 'Bebas Neue', cursive; color: #4A7C2F; font-size: 0.9rem; letter-spacing: 0.05em;">RIO NA CHEIA</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 4: Mapeamento -->
+            <div class="slide">
+                <div class="accent-bar"></div>
+                <div class="slide-content" style="background: #0D0D0D;">
+                    <h2 class="slide-title">MAPEAMENTO<br><span class="accent">DOS DESAFIOS</span></h2>
+                    <p class="slide-text" style="margin-bottom: 1.5rem; max-width: 700px;">💬 <strong style="color: #F07800;">Pergunta:</strong> "O que muda na sua rotina quando a prova tá chegando?"</p>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; max-width: 700px; margin-bottom: 1.5rem;">
+                        <div style="background: rgba(40,80,20,0.15); border: 1px solid rgba(40,80,20,0.4); border-radius: 6px; padding: 0.75rem; cursor: pointer; transition: all 200ms ease;" onmouseover="this.style.background='rgba(240,120,0,0.18)'; this.style.borderColor='rgba(240,120,0,0.5)'" onmouseout="this.style.background='rgba(40,80,20,0.15)'; this.style.borderColor='rgba(40,80,20,0.4)'">
+                            <p style="font-size: 1.4rem; margin-bottom: 0.3rem;">🍫</p>
+                            <p style="font-family: 'Bebas Neue', cursive; font-size: 0.85rem; color: #F5F0E8; letter-spacing: 0.04em; margin-bottom: 0.2rem;">Alimentação compensatória</p>
+                            <p style="font-size: 0.72rem; color: rgba(245,240,232,0.55); line-height: 1.4; text-align: justify;">Doce, besteira — ou o oposto: comer pouco</p>
+                        </div>
+                        <div style="background: rgba(40,80,20,0.15); border: 1px solid rgba(40,80,20,0.4); border-radius: 6px; padding: 0.75rem; cursor: pointer; transition: all 200ms ease;" onmouseover="this.style.background='rgba(240,120,0,0.18)'; this.style.borderColor='rgba(240,120,0,0.5)'" onmouseout="this.style.background='rgba(40,80,20,0.15)'; this.style.borderColor='rgba(40,80,20,0.4)'">
+                            <p style="font-size: 1.4rem; margin-bottom: 0.3rem;">📱</p>
+                            <p style="font-family: 'Bebas Neue', cursive; font-size: 0.85rem; color: #F5F0E8; letter-spacing: 0.04em; margin-bottom: 0.2rem;">Tempo de tela excessivo</p>
+                            <p style="font-size: 0.72rem; color: rgba(245,240,232,0.55); line-height: 1.4; text-align: justify;">Fuga da ansiedade — mas não descansa</p>
+                        </div>
+                        <div style="background: rgba(40,80,20,0.15); border: 1px solid rgba(40,80,20,0.4); border-radius: 6px; padding: 0.75rem; cursor: pointer; transition: all 200ms ease;" onmouseover="this.style.background='rgba(240,120,0,0.18)'; this.style.borderColor='rgba(240,120,0,0.5)'" onmouseout="this.style.background='rgba(40,80,20,0.15)'; this.style.borderColor='rgba(40,80,20,0.4)'">
+                            <p style="font-size: 1.4rem; margin-bottom: 0.3rem;">😴</p>
+                            <p style="font-family: 'Bebas Neue', cursive; font-size: 0.85rem; color: #F5F0E8; letter-spacing: 0.04em; margin-bottom: 0.2rem;">Sono prejudicado</p>
+                            <p style="font-size: 0.72rem; color: rgba(245,240,232,0.55); line-height: 1.4; text-align: justify;">Difícil dormir, difícil acordar</p>
+                        </div>
+                        <div style="background: rgba(40,80,20,0.15); border: 1px solid rgba(40,80,20,0.4); border-radius: 6px; padding: 0.75rem; cursor: pointer; transition: all 200ms ease;" onmouseover="this.style.background='rgba(240,120,0,0.18)'; this.style.borderColor='rgba(240,120,0,0.5)'" onmouseout="this.style.background='rgba(40,80,20,0.15)'; this.style.borderColor='rgba(40,80,20,0.4)'">
+                            <p style="font-size: 1.4rem; margin-bottom: 0.3rem;">🧠</p>
+                            <p style="font-family: 'Bebas Neue', cursive; font-size: 0.85rem; color: #F5F0E8; letter-spacing: 0.04em; margin-bottom: 0.2rem;">Dificuldade de foco</p>
+                            <p style="font-size: 0.72rem; color: rgba(245,240,232,0.55); line-height: 1.4; text-align: justify;">Mente dispersa, pensamentos acelerados</p>
+                        </div>
+                        <div style="background: rgba(40,80,20,0.15); border: 1px solid rgba(40,80,20,0.4); border-radius: 6px; padding: 0.75rem; cursor: pointer; transition: all 200ms ease;" onmouseover="this.style.background='rgba(240,120,0,0.18)'; this.style.borderColor='rgba(240,120,0,0.5)'" onmouseout="this.style.background='rgba(40,80,20,0.15)'; this.style.borderColor='rgba(40,80,20,0.4)'">
+                            <p style="font-size: 1.4rem; margin-bottom: 0.3rem;">😤</p>
+                            <p style="font-family: 'Bebas Neue', cursive; font-size: 0.85rem; color: #F5F0E8; letter-spacing: 0.04em; margin-bottom: 0.2rem;">Autocrítica elevada</p>
+                            <p style="font-size: 0.72rem; color: rgba(245,240,232,0.55); line-height: 1.4; text-align: justify;">"Não to dando conta", "não sou suficiente"</p>
+                        </div>
+                        <div style="background: rgba(40,80,20,0.15); border: 1px solid rgba(40,80,20,0.4); border-radius: 6px; padding: 0.75rem; cursor: pointer; transition: all 200ms ease;" onmouseover="this.style.background='rgba(240,120,0,0.18)'; this.style.borderColor='rgba(240,120,0,0.5)'" onmouseout="this.style.background='rgba(40,80,20,0.15)'; this.style.borderColor='rgba(40,80,20,0.4)'">
+                            <p style="font-size: 1.4rem; margin-bottom: 0.3rem;">💪</p>
+                            <p style="font-family: 'Bebas Neue', cursive; font-size: 0.85rem; color: #F5F0E8; letter-spacing: 0.04em; margin-bottom: 0.2rem;">Tensão corporal</p>
+                            <p style="font-size: 0.72rem; color: rgba(245,240,232,0.55); line-height: 1.4; text-align: justify;">Mandíbula, ombros, dor de cabeça</p>
+                        </div>
+                    </div>
+                    <div style="background: rgba(40,80,20,0.2); border: 1px solid rgba(74,124,47,0.4); border-radius: 4px; padding: 0.75rem 1rem; max-width: 700px;">
+                        <p style="font-size: 0.82rem; color: rgba(245,240,232,0.75); line-height: 1.5; text-align: justify;">🌿 Tudo isso são <strong style="color: #4A7C2F;">respostas normais do sistema nervoso</strong> a situações de pressão avaliativa — não fraquezas individuais.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 5: Estratégias Véspera -->
+            <div class="slide">
+                <div class="accent-bar"></div>
+                <div class="slide-content" style="background: #0D0D0D;">
+                    <h2 class="slide-title">ESTRATÉGIAS PARA<br><span class="accent">A VÉSPERA</span></h2>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; max-width: 800px; margin-top: 1.5rem;">
+                        <div style="background: rgba(240,120,0,0.1); border: 1px solid rgba(240,120,0,0.3); border-radius: 6px; padding: 1rem; cursor: pointer; transition: all 200ms ease;" onmouseover="this.style.background='rgba(240,120,0,0.2)'" onmouseout="this.style.background='rgba(240,120,0,0.1)'">
+                            <p style="font-size: 1.2rem; margin-bottom: 0.5rem;">🌙</p>
+                            <p style="font-family: 'Bebas Neue', cursive; color: #F07800; font-size: 0.95rem; letter-spacing: 0.04em; margin-bottom: 0.5rem;">Sono de qualidade</p>
+                            <p style="font-size: 0.8rem; color: rgba(245,240,232,0.65); line-height: 1.5; text-align: justify;">6-8 horas. Seu cérebro precisa consolidar memória. Sem sono = sem performance.</p>
+                        </div>
+                        <div style="background: rgba(240,120,0,0.1); border: 1px solid rgba(240,120,0,0.3); border-radius: 6px; padding: 1rem; cursor: pointer; transition: all 200ms ease;" onmouseover="this.style.background='rgba(240,120,0,0.2)'" onmouseout="this.style.background='rgba(240,120,0,0.1)'">
+                            <p style="font-size: 1.2rem; margin-bottom: 0.5rem;">🧘</p>
+                            <p style="font-family: 'Bebas Neue', cursive; color: #F07800; font-size: 0.95rem; letter-spacing: 0.04em; margin-bottom: 0.5rem;">Movimento corporal</p>
+                            <p style="font-size: 0.8rem; color: rgba(245,240,232,0.65); line-height: 1.5; text-align: justify;">Caminhada, dança, alongamento. Libera endorfina e reduz cortisol (hormônio do estresse).</p>
+                        </div>
+                        <div style="background: rgba(240,120,0,0.1); border: 1px solid rgba(240,120,0,0.3); border-radius: 6px; padding: 1rem; cursor: pointer; transition: all 200ms ease;" onmouseover="this.style.background='rgba(240,120,0,0.2)'" onmouseout="this.style.background='rgba(240,120,0,0.1)'">
+                            <p style="font-size: 1.2rem; margin-bottom: 0.5rem;">🤝</p>
+                            <p style="font-family: 'Bebas Neue', cursive; color: #F07800; font-size: 0.95rem; letter-spacing: 0.04em; margin-bottom: 0.5rem;">Conexão social</p>
+                            <p style="font-size: 0.8rem; color: rgba(245,240,232,0.65); line-height: 1.5; text-align: justify;">Conversa com amigos, família. Isolamento amplifica ansiedade. Você não está sozinho.</p>
+                        </div>
+                        <div style="background: rgba(240,120,0,0.1); border: 1px solid rgba(240,120,0,0.3); border-radius: 6px; padding: 1rem; cursor: pointer; transition: all 200ms ease;" onmouseover="this.style.background='rgba(240,120,0,0.2)'" onmouseout="this.style.background='rgba(240,120,0,0.1)'">
+                            <p style="font-size: 1.2rem; margin-bottom: 0.5rem;">🎯</p>
+                            <p style="font-family: 'Bebas Neue', cursive; color: #F07800; font-size: 0.95rem; letter-spacing: 0.04em; margin-bottom: 0.5rem;">Limite de estudo</p>
+                            <p style="font-size: 0.8rem; color: rgba(245,240,232,0.65); line-height: 1.5; text-align: justify;">Estudar até 22h. Depois: relaxar. Seu cérebro não absorve mais. Qualidade > quantidade.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 6: Relaxamento -->
+            <div class="slide">
+                <div class="accent-bar"></div>
+                <div class="slide-content" style="background: #0A0D08;">
+                    <h2 class="slide-title">RELAXAMENTO<br><span class="accent">MUSCULAR</span></h2>
+                    <p class="slide-text" style="margin-bottom: 1rem; max-width: 700px;">Técnica de Jacobson (1938). Tensionar e soltar grupos musculares ativa o sistema nervoso parassimpático — o corpo recebe o sinal de que não há ameaça real.</p>
+                    <div style="background: rgba(74,124,47,0.15); border: 1px solid rgba(74,124,47,0.4); border-left: 3px solid #4A7C2F; border-radius: 6px; padding: 0.9rem 1.1rem; max-width: 700px;">
+                        <p style="font-size: 0.85rem; color: rgba(245,240,232,0.6); margin-bottom: 0.5rem; text-align: justify;"><strong style="color: #4A7C2F;">Preparação:</strong> Sente-se ou deite-se confortável. Respire naturalmente. Quando a mente vaguear, traga de volta para a respiração. Sem julgamento.</p>
+                        <p style="font-size: 0.85rem; color: rgba(245,240,232,0.6); text-align: justify;"><strong style="color: #4A7C2F;">Prática:</strong> Siga de baixo para cima. Para cada grupo: comprima por 5-10 segundos bem devagar, depois solte em 5 segundos. Observe a diferença.</p>
+                    </div>
+                    <div style="margin-top: 1.5rem;">
+                        <img src="https://d2xsxph8kpxj0f.cloudfront.net/310519663757223843/F8uMASGKZwf5Y242ejh5zm/corpo_relaxamento-XRnS5zZoy45Gc8WpkAPpQM.webp" alt="Diagrama de corpo" style="max-width: 300px; height: auto;">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 7: Dia da Prova -->
+            <div class="slide">
+                <div class="accent-bar"></div>
+                <div class="slide-content" style="background: #0D0D0D;">
+                    <h2 class="slide-title">DIA DA PROVA<br><span class="accent">5 TÉCNICAS</span></h2>
+                    <p class="slide-text" style="margin-bottom: 2rem; max-width: 700px;">Você tem ferramentas. Escolha a que funciona melhor para você naquele momento.</p>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; max-width: 700px;">
+                        <div style="background: rgba(240,120,0,0.1); border: 1px solid rgba(240,120,0,0.3); border-radius: 6px; padding: 1rem; text-align: center;">
+                            <p style="font-size: 1.5rem; margin-bottom: 0.5rem;">🫁</p>
+                            <p style="font-family: 'Bebas Neue', cursive; color: #F07800; font-size: 0.9rem; letter-spacing: 0.04em;">Respiração</p>
+                        </div>
+                        <div style="background: rgba(240,120,0,0.1); border: 1px solid rgba(240,120,0,0.3); border-radius: 6px; padding: 1rem; text-align: center;">
+                            <p style="font-size: 1.5rem; margin-bottom: 0.5rem;">🧠</p>
+                            <p style="font-family: 'Bebas Neue', cursive; color: #F07800; font-size: 0.9rem; letter-spacing: 0.04em;">Grounding</p>
+                        </div>
+                        <div style="background: rgba(240,120,0,0.1); border: 1px solid rgba(240,120,0,0.3); border-radius: 6px; padding: 1rem; text-align: center;">
+                            <p style="font-size: 1.5rem; margin-bottom: 0.5rem;">✍️</p>
+                            <p style="font-family: 'Bebas Neue', cursive; color: #F07800; font-size: 0.9rem; letter-spacing: 0.04em;">Dump Cognitivo</p>
+                        </div>
+                        <div style="background: rgba(240,120,0,0.1); border: 1px solid rgba(240,120,0,0.3); border-radius: 6px; padding: 1rem; text-align: center;">
+                            <p style="font-size: 1.5rem; margin-bottom: 0.5rem;">💪</p>
+                            <p style="font-family: 'Bebas Neue', cursive; color: #F07800; font-size: 0.9rem; letter-spacing: 0.04em;">Relaxamento</p>
+                        </div>
+                        <div style="background: rgba(240,120,0,0.1); border: 1px solid rgba(240,120,0,0.3); border-radius: 6px; padding: 1rem; text-align: center;">
+                            <p style="font-size: 1.5rem; margin-bottom: 0.5rem;">⚡</p>
+                            <p style="font-family: 'Bebas Neue', cursive; color: #F07800; font-size: 0.9rem; letter-spacing: 0.04em;">Ressignificar</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 8: Respiração -->
+            <div class="slide">
+                <div class="accent-bar"></div>
+                <div class="slide-content" style="background: #0D0D0D;">
+                    <h2 class="slide-title">RESPIRAÇÃO<br><span class="accent">EM CAIXA</span></h2>
+                    <p class="slide-text" style="margin-bottom: 1.5rem; max-width: 700px;">Box Breathing (4-4-4-4): Inspire por 4 segundos. Segure por 4. Expire por 4. Segure por 4. Repita 3-5 vezes.</p>
+                    <div style="background: rgba(240,120,0,0.1); border: 1px solid rgba(240,120,0,0.3); border-left: 3px solid #F07800; border-radius: 6px; padding: 1rem; max-width: 700px;">
+                        <p style="font-size: 0.85rem; color: rgba(245,240,232,0.65); line-height: 1.6; text-align: justify;">Isso você pode fazer em qualquer momento — até na sala de prova. Ninguém vai notar. É silencioso, rápido e funciona.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 9: Grounding -->
+            <div class="slide">
+                <div class="accent-bar"></div>
+                <div class="slide-content" style="background: #0D0D0D;">
+                    <h2 class="slide-title">GROUNDING<br><span class="accent">5-4-3-2-1</span></h2>
+                    <p class="slide-text" style="margin-bottom: 1.5rem; max-width: 700px;">Ancoragem sensorial. Você está em uma sala de prova. Sua mente quer viajar. Traga ela de volta:</p>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; max-width: 700px;">
+                        <div style="background: rgba(74,124,47,0.15); border: 1px solid rgba(74,124,47,0.4); border-radius: 6px; padding: 0.9rem;">
+                            <p style="font-family: 'Bebas Neue', cursive; color: #4A7C2F; font-size: 0.9rem; letter-spacing: 0.04em; margin-bottom: 0.5rem;">👀 5 COISAS QUE VÊ</p>
+                            <p style="font-size: 0.75rem; color: rgba(245,240,232,0.6); line-height: 1.5; text-align: justify;">A mesa, a caneta, a janela, o relógio, o papel.</p>
+                        </div>
+                        <div style="background: rgba(74,124,47,0.15); border: 1px solid rgba(74,124,47,0.4); border-radius: 6px; padding: 0.9rem;">
+                            <p style="font-family: 'Bebas Neue', cursive; color: #4A7C2F; font-size: 0.9rem; letter-spacing: 0.04em; margin-bottom: 0.5rem;">✋ 4 COISAS QUE TOCA</p>
+                            <p style="font-size: 0.75rem; color: rgba(245,240,232,0.6); line-height: 1.5; text-align: justify;">Sua roupa, a cadeira, o chão, o ar.</p>
+                        </div>
+                        <div style="background: rgba(74,124,47,0.15); border: 1px solid rgba(74,124,47,0.4); border-radius: 6px; padding: 0.9rem;">
+                            <p style="font-family: 'Bebas Neue', cursive; color: #4A7C2F; font-size: 0.9rem; letter-spacing: 0.04em; margin-bottom: 0.5rem;">👂 3 COISAS QUE OUVE</p>
+                            <p style="font-size: 0.75rem; color: rgba(245,240,232,0.6); line-height: 1.5; text-align: justify;">Barulho da sala, respiração, silêncio.</p>
+                        </div>
+                        <div style="background: rgba(74,124,47,0.15); border: 1px solid rgba(74,124,47,0.4); border-radius: 6px; padding: 0.9rem;">
+                            <p style="font-family: 'Bebas Neue', cursive; color: #4A7C2F; font-size: 0.9rem; letter-spacing: 0.04em; margin-bottom: 0.5rem;">👃 2 COISAS QUE CHEIRA</p>
+                            <p style="font-size: 0.75rem; color: rgba(245,240,232,0.6); line-height: 1.5; text-align: justify;">Ar da sala, seu perfume/sabonete.</p>
+                        </div>
+                        <div style="background: rgba(74,124,47,0.15); border: 1px solid rgba(74,124,47,0.4); border-radius: 6px; padding: 0.9rem;">
+                            <p style="font-family: 'Bebas Neue', cursive; color: #4A7C2F; font-size: 0.9rem; letter-spacing: 0.04em; margin-bottom: 0.5rem;">👅 1 COISA QUE SABOREIA</p>
+                            <p style="font-size: 0.75rem; color: rgba(245,240,232,0.6); line-height: 1.5; text-align: justify;">Sua boca, saliva, ar.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 10: Dump Cognitivo -->
+            <div class="slide">
+                <div class="accent-bar"></div>
+                <div class="slide-content" style="background: #0D0D0D;">
+                    <h2 class="slide-title">DUMP<br><span class="accent">COGNITIVO</span></h2>
+                    <p class="slide-text" style="margin-bottom: 1.5rem; max-width: 700px;">Sua mente quer pensar em 10 coisas ao mesmo tempo. Escreva na margem do papel tudo que quer pensar. Depois volta pro teste.</p>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem; max-width: 700px;">
+                        <div style="background: rgba(240,120,0,0.1); border: 1px solid rgba(240,120,0,0.3); border-radius: 6px; padding: 0.9rem;">
+                            <p style="font-family: 'Bebas Neue', cursive; color: #F07800; font-size: 0.85rem; letter-spacing: 0.04em; margin-bottom: 0.5rem;">🧠 PENSAMENTOS</p>
+                            <p style="font-size: 0.75rem; color: rgba(245,240,232,0.6); line-height: 1.5; text-align: justify;">"Será que acertei?" "Faltam 30 min"</p>
+                        </div>
+                        <div style="background: rgba(240,120,0,0.1); border: 1px solid rgba(240,120,0,0.3); border-radius: 6px; padding: 0.9rem;">
+                            <p style="font-family: 'Bebas Neue', cursive; color: #F07800; font-size: 0.85rem; letter-spacing: 0.04em; margin-bottom: 0.5rem;">✅ TAREFAS</p>
+                            <p style="font-size: 0.75rem; color: rgba(245,240,232,0.6); line-height: 1.5; text-align: justify;">"Ligar pra mãe" "Pagar conta"</p>
+                        </div>
+                        <div style="background: rgba(240,120,0,0.1); border: 1px solid rgba(240,120,0,0.3); border-radius: 6px; padding: 0.9rem;">
+                            <p style="font-family: 'Bebas Neue', cursive; color: #F07800; font-size: 0.85rem; letter-spacing: 0.04em; margin-bottom: 0.5rem;">💓 SENSAÇÕES</p>
+                            <p style="font-size: 0.75rem; color: rgba(245,240,232,0.6); line-height: 1.5; text-align: justify;">Coração acelerado, mão tremendo</p>
+                        </div>
+                        <div style="background: rgba(240,120,0,0.1); border: 1px solid rgba(240,120,0,0.3); border-radius: 6px; padding: 0.9rem;">
+                            <p style="font-family: 'Bebas Neue', cursive; color: #F07800; font-size: 0.85rem; letter-spacing: 0.04em; margin-bottom: 0.5rem;">😰 EMOÇÕES</p>
+                            <p style="font-size: 0.75rem; color: rgba(245,240,232,0.6); line-height: 1.5; text-align: justify;">Medo, ansiedade, insegurança</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 11: Ressignificar Ansiedade -->
+            <div class="slide">
+                <div class="accent-bar"></div>
+                <div class="slide-content" style="background: #0D0D0D;">
+                    <h2 class="slide-title">RESSIGNIFICAR<br><span class="accent">A ANSIEDADE</span></h2>
+                    <p class="slide-text" style="margin-bottom: 1.5rem; max-width: 700px;">Pesquisa de Alison Wood Brooks (Harvard): Sua ansiedade não é inimiga. É <strong style="color: #F07800;">excitação</strong>. Seu corpo está pronto para o desafio.</p>
+                    <div style="background: rgba(240,120,0,0.1); border: 1px solid rgba(240,120,0,0.3); border-left: 3px solid #F07800; border-radius: 6px; padding: 1rem; max-width: 700px;">
+                        <p style="font-size: 0.85rem; color: rgba(245,240,232,0.65); line-height: 1.6; text-align: justify;">Quando sentir o coração acelerado, as mãos tremendo, a mente rápida — não diga "Estou com medo". Diga: <strong style="color: #F07800;">"Estou animado. Meu corpo está pronto."</strong> Isso muda tudo.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 12: Fechamento -->
+            <div class="slide">
+                <div class="accent-bar"></div>
+                <div class="slide-content" style="background: #0D0D0D;">
+                    <h2 class="slide-title">VOCÊ NÃO<br><span class="accent">ESTÁ SOZINHO</span></h2>
+                    <p class="slide-text" style="margin-bottom: 2rem; max-width: 700px;">Você tem ferramentas. Você tem apoio. Você tem capacidade. Agora é só confiar no processo.</p>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1rem; max-width: 700px; margin-bottom: 2rem;">
+                        <div style="background: rgba(74,124,47,0.15); border: 1px solid rgba(74,124,47,0.4); border-radius: 6px; padding: 1rem; text-align: center;">
+                            <p style="font-size: 1.3rem; margin-bottom: 0.5rem;">🌿</p>
+                            <p style="font-family: 'Bebas Neue', cursive; color: #4A7C2F; font-size: 0.85rem; letter-spacing: 0.04em;">Reflexão</p>
+                        </div>
+                        <div style="background: rgba(74,124,47,0.15); border: 1px solid rgba(74,124,47,0.4); border-radius: 6px; padding: 1rem; text-align: center;">
+                            <p style="font-size: 1.3rem; margin-bottom: 0.5rem;">🫁</p>
+                            <p style="font-family: 'Bebas Neue', cursive; color: #4A7C2F; font-size: 0.85rem; letter-spacing: 0.04em;">Respiração</p>
+                        </div>
+                        <div style="background: rgba(74,124,47,0.15); border: 1px solid rgba(74,124,47,0.4); border-radius: 6px; padding: 1rem; text-align: center;">
+                            <p style="font-size: 1.3rem; margin-bottom: 0.5rem;">💪</p>
+                            <p style="font-family: 'Bebas Neue', cursive; color: #4A7C2F; font-size: 0.85rem; letter-spacing: 0.04em;">Relaxamento</p>
+                        </div>
+                        <div style="background: rgba(74,124,47,0.15); border: 1px solid rgba(74,124,47,0.4); border-radius: 6px; padding: 1rem; text-align: center;">
+                            <p style="font-size: 1.3rem; margin-bottom: 0.5rem;">🧠</p>
+                            <p style="font-family: 'Bebas Neue', cursive; color: #4A7C2F; font-size: 0.85rem; letter-spacing: 0.04em;">Grounding</p>
+                        </div>
+                        <div style="background: rgba(74,124,47,0.15); border: 1px solid rgba(74,124,47,0.4); border-radius: 6px; padding: 1rem; text-align: center;">
+                            <p style="font-size: 1.3rem; margin-bottom: 0.5rem;">✍️</p>
+                            <p style="font-family: 'Bebas Neue', cursive; color: #4A7C2F; font-size: 0.85rem; letter-spacing: 0.04em;">Dump</p>
+                        </div>
+                        <div style="background: rgba(74,124,47,0.15); border: 1px solid rgba(74,124,47,0.4); border-radius: 6px; padding: 1rem; text-align: center;">
+                            <p style="font-size: 1.3rem; margin-bottom: 0.5rem;">⚡</p>
+                            <p style="font-family: 'Bebas Neue', cursive; color: #4A7C2F; font-size: 0.85rem; letter-spacing: 0.04em;">Ressignificar</p>
+                        </div>
+                    </div>
+                    <div style="border-top: 2px solid #F07800; padding-top: 1.5rem;">
+                        <p style="font-family: 'Bebas Neue', cursive; font-size: 0.9rem; letter-spacing: 0.05em; color: #F07800; margin-bottom: 0.5rem;">ECOS DA MARGEM — REDE EMANCIPA MANAUS</p>
+                        <p style="font-size: 0.8rem; color: rgba(245,240,232,0.6);">Educação Popular • Cuidado Emocional • Território Amazônico</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <button class="nav-button" id="prev-btn" onclick="previousSlide()">← Anterior</button>
+            <div class="dots" id="dots-container"></div>
+            <button class="nav-button" id="next-btn" onclick="nextSlide()">Próximo →</button>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        function updateSlide() {
+            slides.forEach((slide, i) => {
+                slide.classList.remove('active', 'prev');
+                if (i === currentSlide) {
+                    slide.classList.add('active');
+                } else if (i < currentSlide) {
+                    slide.classList.add('prev');
+                }
+            });
+
+            document.getElementById('current-slide').textContent = currentSlide + 1;
+            document.getElementById('prev-btn').disabled = currentSlide === 0;
+            document.getElementById('next-btn').disabled = currentSlide === totalSlides - 1;
+
+            const progress = ((currentSlide + 1) / totalSlides) * 100;
+            document.getElementById('progress-fill').style.width = progress + '%';
+
+            updateDots();
+        }
+
+        function updateDots() {
+            const dotsContainer = document.getElementById('dots-container');
+            dotsContainer.innerHTML = '';
+            for (let i = 0; i < totalSlides; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'dot' + (i === currentSlide ? ' active' : '');
+                dot.onclick = () => goToSlide(i);
+                dotsContainer.appendChild(dot);
+            }
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides - 1) {
+                currentSlide++;
+                updateSlide();
+            }
+        }
+
+        function previousSlide() {
+            if (currentSlide > 0) {
+                currentSlide--;
+                updateSlide();
+            }
+        }
+
+        function goToSlide(n) {
+            currentSlide = n;
+            updateSlide();
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') nextSlide();
+            if (e.key === 'ArrowLeft') previousSlide();
+        });
+
+        updateSlide();
+    </script>
+</body>
+</html>
